@@ -1,0 +1,29 @@
+public class Card {
+
+    private String suit;
+    private String value;
+    private String fileName;
+
+    public String getSuit() {
+        return suit;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+
+    public Card(String suit, String value){
+        this.suit = suit;
+        this.value = value;
+        fileName = "card_" + suit + "_" + value;
+    }
+
+    public String toString() {
+        return "Suit: " + suit + " Value: " + value + " File Name: " + fileName;
+    }
+}
