@@ -22,8 +22,7 @@ public class Deck {
 
     public Card getRandomCard(){
         int cardRemoved = (int) (Math.random()*cards.size());
-
-        cards.remove(cards.get(cardRemoved));
+        cards.remove(cardRemoved);
         return cards.get(cardRemoved);
     }
 

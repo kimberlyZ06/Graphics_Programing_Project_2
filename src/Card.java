@@ -20,7 +20,7 @@ public class Card {
     public Card(String suit, String value){
         this.suit = suit;
         this.value = value;
-        fileName = "card_" + suit + "_" + value;
+        fileName = "card_" + suit + "_" + value + ".png";
     }
 
     public String toString() {
