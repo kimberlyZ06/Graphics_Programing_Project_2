@@ -5,20 +5,19 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.awt.Font;
 
 class DrawPanel extends JPanel implements MouseListener {
 
-    private Deck deck;
-    private Card currCard;
-    private Card[][] onScreen = new Card[3][3];
+    private Deck d;
+    private Card[][] cards;
 
     public DrawPanel() {
-        deck = new Deck();
-        for (int row = 0; row < onScreen.length; row++) {
-            for (int col = 0; col < onScreen[0].length; col++) {
-                currCard = deck.getRandomCard();
-                onScreen[row][col] = currCard;
+
+        cards = new Card[3][3];
+        d = new Deck();
+        for (int r = 0; r < cards.length; r++) {
+            for (int c = 0; c < cards.length; c++) {
+                cards[r][c] = d.getRandomCard();
             }
         }
         this.addMouseListener(this);
@@ -28,42 +27,84 @@ class DrawPanel extends JPanel implements MouseListener {
         super.paintComponent(g);
         int x = 50;
         int y = 10;
-
-        for (int row = 0; row < onScreen.length; row++) {
-            for (int col = 0; col < onScreen[0].length; col++) {
-                g.drawImage(onScreen[row][col].getImage(), x + (100*col), y + (100*row), null);
-                Rectangle hitbox = new Rectangle(x + (100* col), y + (100*row), onScreen[row][col].getImage().getWidth(),
-                        onScreen[row][col].getImage().getHeight());
-                onScreen[row][col].setHitbox(hitbox);
-                if (onScreen[row][col].isVisible()) {
-                    g.drawRect(x + (100 * col), y + (100 * row), (int) onScreen[row][col].getHitbox().getWidth(),
-                            (int) onScreen[row][col].getHitbox().getHeight());
+        for (int r = 0; r < cards.length; r++) {
+            for (int c = 0; c < cards.length; c++) {
+                g.drawImage(cards[r][c].getImage(), x, y, null);
+                Rectangle cardHitBox = new Rectangle(x, y, cards[r][c].getImage().getWidth(), cards[r][c].getImage().getHeight());
+                cards[r][c].setHitbox(cardHitBox);
+                if (cards[r][c].getHighlight()) {
+                    g.drawRect(x, y, (int)cardHitBox.getWidth(), (int)cardHitBox.getHeight());
                 }
+                x += 80;
             }
+            y += 100;
+            x = 50;
         }
-        g.drawString("There are " + deck.getCards().size() + " cards left", 50, 300);
+
+        g.drawString("Number of cards left: " + d.getDeck().size(), x, y + 100);
+
+        //play again
+        g.drawRect(50, 300, 200, 50);
+        g.drawString("Play Again", 120, 330);
+
+        //replace cards
+
     }
 
     public void mousePressed(MouseEvent e) {
 
         Point p = e.getPoint();
         int button = e.getButton();
-        //1 is left click, 3 is right click
 
-        for (int row = 0; row < onScreen.length; row++) {
-            for (int col = 0; col < onScreen[0].length; col++) {
-                if (onScreen[row][col].getHitbox().contains(p)){
+        Rectangle playAgain = new Rectangle(50, 300, 200, 50);
 
-                    if (button == 3){
-                        onScreen[row][col].setVisible(!onScreen[row][col].isVisible());
+        for (int r = 0; r < cards.length; r++) {
+            for (int c = 0; c < cards.length; c++) {
+                if (d.getDeck().size() != 0 && button == 1) {
+                    if (cards[r][c].getHitbox().contains(p)) {
+                        cards[r][c].flipHighlight();
                     }
+                }
+                //check
+                ArrayList<Card> highlighted = new ArrayList<>();
+                for (int row = 0; row < cards.length; row++) {
+                    for (int col = 0; col < cards.length; col++) {
+                        if (cards[row][col].getHighlight()){
+                            highlighted.add(cards[row][col]);
+                        }
+                    }
+                }
 
-                    if (deck.getCards().size() != 0 && button == 1) {
-                        onScreen[row][col] = deck.getRandomCard();
+                if (highlighted.size()== 2){
+                    int firstVal = Integer.parseInt(highlighted.get(0).getValue());
+                    int secVal = Integer.parseInt(highlighted.get(1).getValue());
+
+                    if (firstVal + secVal == 11){
+                        for (int row = 0; row < cards.length; row++) {
+                            for (int col = 0; col < cards.length; col++) {
+                                if (cards[row][col].getHighlight()){
+                                    cards[row][col] = d.getRandomCard();
+                                    cards[row][col].flipHighlight();
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                if (button == 1 && playAgain.contains(p)) {
+                    d = new Deck();
+                    for (int row = 0; row < cards.length; row++) {
+                        for (int col = 0; col < cards.length; col++) {
+                            cards[row][col] = d.getRandomCard();
+                        }
                     }
                 }
             }
         }
+
+
+
     }
 
     public void mouseReleased(MouseEvent e) { }

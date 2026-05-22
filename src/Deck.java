@@ -1,29 +1,26 @@
 import java.util.ArrayList;
 
 public class Deck {
-    private ArrayList<Card> cards = new ArrayList<>();
+    private ArrayList<Card> deck;
 
-    public ArrayList<Card> getCards() {
-        return cards;
-    }
+    public Deck() {
+        deck = new ArrayList<Card>();
+        String[] suits = {"clubs", "diamonds", "hearts", "spades"};
+        String[] values = {"02", "03", "04", "05", "06", "07", "08", "09", "10", "A", "J", "K", "Q"};
 
-    public Deck(){
-        String[] pics = {"diamonds", "clubs", "hearts", "spades"};
-        String[] nums = {"A", "02", "03", "04", "05", "06", "07", "08", "09", "10", "J", "Q", "K"};
-        for (int i = 0; i < pics.length; i++) {
-            for (int j = 0; j < nums.length; j++) {
-                String cardNum = nums[j];
-                Card card = new Card(pics[i], cardNum);
-                cards.add(card);
+        for (String s : suits) {
+            for (String v : values) {
+                deck.add(new Card(s, v));
             }
         }
     }
 
-
-    public Card getRandomCard(){
-        int cardRemoved = (int) (Math.random()*cards.size() - 1);
-        cards.remove(cardRemoved);
-        return cards.get(cardRemoved);
+    public Card getRandomCard() {
+        int random = (int)(Math.random() * deck.size());
+        return deck.remove(random);
     }
 
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
 }

@@ -10,28 +10,27 @@ public class Card {
     private String imageFileName;
     private BufferedImage image;
     private Rectangle hitbox;
-    private boolean visible;
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
+    private boolean highlight;
 
     public Card(String suit, String value) {
+        this.highlight = false;
         this.suit = suit;
         this.value = value;
         this.imageFileName = "card_"+suit+"_"+value+".png";
         this.image = readImage();
         this.hitbox = new Rectangle(-10, -10, image.getWidth(), image.getHeight());
-        this.visible = true;
     }
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+
+    public boolean getHighlight() {
+        return this.highlight;
+    }
+
+    public void flipHighlight() {
+        this.highlight = !this.highlight;
     }
 
     public void setHitbox(Rectangle hitbox) {
@@ -44,6 +43,9 @@ public class Card {
 
 
     public String getValue() {
+        if (value.equals("A")){
+            return "1";
+        }
         return value;
     }
 
