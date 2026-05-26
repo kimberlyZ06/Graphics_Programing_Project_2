@@ -48,7 +48,8 @@ class DrawPanel extends JPanel implements MouseListener {
         g.drawString("Play Again", 120, 330);
 
         //replace cards
-
+        g.drawRect(300, 50, 100, 50);
+        g.drawString("Replace Cards", 310, 80);
     }
 
     public void mousePressed(MouseEvent e) {
@@ -57,10 +58,12 @@ class DrawPanel extends JPanel implements MouseListener {
         int button = e.getButton();
 
         Rectangle playAgain = new Rectangle(50, 300, 200, 50);
+        Rectangle replaceCard = new Rectangle(300,50,100,50);
 
+        //highlight cards
         for (int r = 0; r < cards.length; r++) {
             for (int c = 0; c < cards.length; c++) {
-                if (d.getDeck().size() != 0 && button == 1) {
+                if (!d.getDeck().isEmpty() && button == 1) {
                     if (cards[r][c].getHitbox().contains(p)) {
                         cards[r][c].flipHighlight();
                     }
@@ -75,23 +78,36 @@ class DrawPanel extends JPanel implements MouseListener {
                     }
                 }
 
-                if (highlighted.size()== 2){
+                if (highlighted.size() == 2){
                     int firstVal = Integer.parseInt(highlighted.get(0).getValue());
                     int secVal = Integer.parseInt(highlighted.get(1).getValue());
 
-                    if (firstVal + secVal == 11){
+                    if (firstVal + secVal == 11 && replaceCard.contains(p)){
                         for (int row = 0; row < cards.length; row++) {
                             for (int col = 0; col < cards.length; col++) {
                                 if (cards[row][col].getHighlight()){
                                     cards[row][col] = d.getRandomCard();
-                                    cards[row][col].flipHighlight();
+                                }
+                            }
+                        }
+                    }
+                } else if (highlighted.size() == 3) {
+                    int firstVal = Integer.parseInt(highlighted.get(0).getValue());
+                    int secVal = Integer.parseInt(highlighted.get(1).getValue());
+                    int thirdVal = Integer.parseInt(highlighted.get(2).getValue());
+
+                    if (firstVal + secVal + thirdVal == 36 && replaceCard.contains(p)){
+                        for (int row = 0; row < cards.length; row++) {
+                            for (int col = 0; col < cards.length; col++) {
+                                if (cards[row][col].getHighlight()){
+                                    cards[row][col] = d.getRandomCard();
                                 }
                             }
                         }
                     }
                 }
 
-
+                //play again
                 if (button == 1 && playAgain.contains(p)) {
                     d = new Deck();
                     for (int row = 0; row < cards.length; row++) {
@@ -101,6 +117,43 @@ class DrawPanel extends JPanel implements MouseListener {
                     }
                 }
             }
+        }
+
+        //winning
+        if (cards.length == 0){
+            getGraphics().drawString("There are " + cards.length + " cards left!", 300, 250);
+        }
+
+        //losing
+        ArrayList<Card> leftOnScreen = new ArrayList<>();
+        int counter = 0;
+        for (int row = 0; row < cards.length; row++) {
+            for (int col = 0; col < cards.length; col++) {
+                leftOnScreen.add(cards[row][col]);
+            }
+        }
+
+        ArrayList<Integer> letterCardsLeft = new ArrayList<Integer>();
+        for (int i = 0; i < leftOnScreen.size(); i++) {
+            for (int j = i + 1; j < leftOnScreen.size(); j++) {
+                //checks for 11
+                if (Integer.parseInt(leftOnScreen.get(i).getValue()) + Integer.parseInt(leftOnScreen.get(j).getValue()) == 11){
+                    counter++;
+                }
+            }
+            //Checks Jack, Queen, King
+            if (Integer.parseInt(leftOnScreen.get(i).getValue()) == 11 ||
+                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 12 ||
+                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 13){
+                letterCardsLeft.add(Integer.parseInt(leftOnScreen.get(i).getValue()));
+            }
+            if (letterCardsLeft.contains(11) && letterCardsLeft.contains(12) &&
+            letterCardsLeft.contains(13)){
+                counter++;
+            }
+        }
+        if (counter == 0){
+            getGraphics().drawString("There are no valid moves! :(", 300, 250);
         }
 
 

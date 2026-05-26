@@ -45,6 +45,12 @@ public class Card {
     public String getValue() {
         if (value.equals("A")){
             return "1";
+        } else if (value.equals("J")) {
+            return "11";
+        } else if (value.equals("Q")) {
+            return "12";
+        } else if (value.equals("K")) {
+            return "13";
         }
         return value;
     }
