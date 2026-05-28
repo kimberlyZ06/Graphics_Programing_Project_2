@@ -10,6 +10,8 @@ class DrawPanel extends JPanel implements MouseListener {
 
     private Deck d;
     private Card[][] cards;
+    private boolean noMovesLeft = false;
+    private boolean win = false;
 
     public DrawPanel() {
 
@@ -50,6 +52,13 @@ class DrawPanel extends JPanel implements MouseListener {
         //replace cards
         g.drawRect(300, 50, 100, 50);
         g.drawString("Replace Cards", 310, 80);
+
+        if (win){
+            g.drawString("There are " + cards.length + " cards left!", 300, 250);
+        }
+        if (noMovesLeft){
+            g.drawString("There are no valid moves! :(", 300, 250);
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -87,6 +96,8 @@ class DrawPanel extends JPanel implements MouseListener {
                             for (int col = 0; col < cards.length; col++) {
                                 if (cards[row][col].getHighlight()){
                                     cards[row][col] = d.getRandomCard();
+                                    noMovesLeft = d.checkForMoves(cards);
+                                    win = d.winning(cards);
                                 }
                             }
                         }
@@ -101,6 +112,8 @@ class DrawPanel extends JPanel implements MouseListener {
                             for (int col = 0; col < cards.length; col++) {
                                 if (cards[row][col].getHighlight()){
                                     cards[row][col] = d.getRandomCard();
+                                    noMovesLeft = d.checkForMoves(cards);
+                                    win = d.winning(cards);
                                 }
                             }
                         }
@@ -113,51 +126,13 @@ class DrawPanel extends JPanel implements MouseListener {
                     for (int row = 0; row < cards.length; row++) {
                         for (int col = 0; col < cards.length; col++) {
                             cards[row][col] = d.getRandomCard();
+                            noMovesLeft = d.checkForMoves(cards);
+                            win = d.winning(cards);
                         }
                     }
                 }
             }
         }
-
-        //winning
-        if (cards.length == 0){
-            getGraphics().drawString("There are " + cards.length + " cards left!", 300, 250);
-        }
-
-        //losing
-        ArrayList<Card> leftOnScreen = new ArrayList<>();
-        int counter = 0;
-        for (int row = 0; row < cards.length; row++) {
-            for (int col = 0; col < cards.length; col++) {
-                leftOnScreen.add(cards[row][col]);
-            }
-        }
-
-        ArrayList<Integer> letterCardsLeft = new ArrayList<Integer>();
-        for (int i = 0; i < leftOnScreen.size(); i++) {
-            for (int j = i + 1; j < leftOnScreen.size(); j++) {
-                //checks for 11
-                if (Integer.parseInt(leftOnScreen.get(i).getValue()) + Integer.parseInt(leftOnScreen.get(j).getValue()) == 11){
-                    counter++;
-                }
-            }
-            //Checks Jack, Queen, King
-            if (Integer.parseInt(leftOnScreen.get(i).getValue()) == 11 ||
-                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 12 ||
-                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 13){
-                letterCardsLeft.add(Integer.parseInt(leftOnScreen.get(i).getValue()));
-            }
-            if (letterCardsLeft.contains(11) && letterCardsLeft.contains(12) &&
-            letterCardsLeft.contains(13)){
-                counter++;
-            }
-        }
-        if (counter == 0){
-            getGraphics().drawString("There are no valid moves! :(", 300, 250);
-        }
-
-
-
     }
 
     public void mouseReleased(MouseEvent e) { }

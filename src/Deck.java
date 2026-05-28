@@ -23,4 +23,45 @@ public class Deck {
     public ArrayList<Card> getDeck() {
         return deck;
     }
+
+    public boolean winning (Card[][] cards) {
+        if (cards.length == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkForMoves(Card[][] cards) {
+//        losing
+        ArrayList<Card> leftOnScreen = new ArrayList<>();
+        int counter = 0;
+        for (int row = 0; row < cards.length; row++) {
+            for (int col = 0; col < cards.length; col++) {
+                leftOnScreen.add(cards[row][col]);
+            }
+        }
+        ArrayList<Integer> letterCardsLeft = new ArrayList<Integer>();
+        for (int i = 0; i < leftOnScreen.size(); i++) {
+            for (int j = i + 1; j < leftOnScreen.size(); j++) {
+                //checks for 11
+                if (Integer.parseInt(leftOnScreen.get(i).getValue()) + Integer.parseInt(leftOnScreen.get(j).getValue()) == 11){
+                    counter++;
+                }
+            }
+            //Checks Jack, Queen, King
+            if (Integer.parseInt(leftOnScreen.get(i).getValue()) == 11 ||
+                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 12 ||
+                    Integer.parseInt(leftOnScreen.get(i).getValue()) == 13){
+                letterCardsLeft.add(Integer.parseInt(leftOnScreen.get(i).getValue()));
+            }
+            if (letterCardsLeft.contains(11) && letterCardsLeft.contains(12) &&
+                    letterCardsLeft.contains(13)){
+                counter++;
+            }
+        }
+        if (counter == 0){
+            return true;
+        }
+        return false;
+    }
 }
