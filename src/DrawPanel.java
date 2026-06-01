@@ -1,9 +1,7 @@
+import java.awt.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Point;
 import java.util.ArrayList;
 
 class DrawPanel extends JPanel implements MouseListener {
@@ -14,7 +12,6 @@ class DrawPanel extends JPanel implements MouseListener {
     private boolean win = false;
 
     public DrawPanel() {
-
         cards = new Card[3][3];
         d = new Deck();
         for (int r = 0; r < cards.length; r++) {
@@ -53,6 +50,14 @@ class DrawPanel extends JPanel implements MouseListener {
         g.drawRect(300, 50, 100, 50);
         g.drawString("Replace Cards", 310, 80);
 
+        //shuffle
+        g.drawRect(300, 130, 100, 50);
+        g.drawString("Shuffle", 330, 160);
+
+        //Hint
+        g.drawRect(300, 210, 100, 50);
+        g.drawString("Hint", 338, 240);
+
         if (win){
             g.drawString("There are " + cards.length + " cards left!", 300, 250);
         }
@@ -68,6 +73,8 @@ class DrawPanel extends JPanel implements MouseListener {
 
         Rectangle playAgain = new Rectangle(50, 300, 200, 50);
         Rectangle replaceCard = new Rectangle(300,50,100,50);
+        Rectangle shuffle = new Rectangle(300, 130, 100, 50);
+        Rectangle hint = new Rectangle(300, 210, 100, 50);
 
         //highlight cards
         for (int r = 0; r < cards.length; r++) {
@@ -129,6 +136,37 @@ class DrawPanel extends JPanel implements MouseListener {
                             noMovesLeft = d.checkForMoves(cards);
                             win = d.winning(cards);
                         }
+                    }
+                }
+
+                //shuffle
+                if (button == 1 && shuffle.contains(p)){
+                    ArrayList<Card> current = new ArrayList<>();
+                    for (int row = 0; row < cards.length; row++) {
+                        for (int col = 0; col < cards[0].length; col++) {
+                            current.add(cards[row][col]);
+                        }
+                    }
+
+                    for (int row = 0; row < cards.length; row++) {
+                        for (int col = 0; col < cards[0].length; col++) {
+                            int cardNum = (int) (Math.random() * current.size());
+                                    cards[row][col] = current.remove(cardNum);
+                        }
+                    }
+                }
+
+                //Hint
+                if (button == 1 && hint.contains(p)){
+                    if (noMovesLeft == false) {
+                        ArrayList<Card> current = new ArrayList<>();
+                        for (int row = 0; row < cards.length; row++) {
+                            for (int col = 0; col < cards[0].length; col++) {
+                                current.add(cards[row][col]);
+                            }
+                        }
+
+
                     }
                 }
             }
