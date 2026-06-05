@@ -62,7 +62,7 @@ class DrawPanel extends JPanel implements MouseListener {
             g.drawString("There are " + cards.length + " cards left!", 300, 250);
         }
         if (noMovesLeft){
-            g.drawString("There are no valid moves! :(", 300, 250);
+            g.drawString("There are no valid moves! :(", 300, 300);
         }
     }
 
@@ -158,15 +158,17 @@ class DrawPanel extends JPanel implements MouseListener {
 
                 //Hint
                 if (button == 1 && hint.contains(p)){
+                    noMovesLeft = d.checkForMoves(cards);
                     if (noMovesLeft == false) {
-                        ArrayList<Card> current = new ArrayList<>();
                         for (int row = 0; row < cards.length; row++) {
                             for (int col = 0; col < cards[0].length; col++) {
-                                current.add(cards[row][col]);
+                                for (int i = 0; i < d.hint(cards).size(); i++) {
+                                    if (cards[row][col].equals(d.hint(cards).get(i))){
+                                        cards[row][col].flipHighlight();
+                                    }
+                                }
                             }
                         }
-
-
                     }
                 }
             }
