@@ -24,8 +24,8 @@ public class Deck {
         return deck;
     }
 
-    public boolean winning (Card[][] cards) {
-        if (cards.length == 0){
+    public boolean winning (Deck d) {
+        if (d.getDeck().size() == 0){
             return true;
         }
         return false;
